@@ -6,6 +6,7 @@ import GameControls from "./GameControls";
 import GameHeader from "./GameHeader";
 import "./GamePlay.css";
 import PlayerStatus from "./PlayerStatus";
+import StrikeOverlay from "./StrikeOverlay";
 
 interface GamePlayProps {
   players: Player[];
@@ -29,6 +30,7 @@ function GamePlay({
   const [stealMode, setStealMode] = useState(false);
   const [showFaceOff, setShowFaceOff] = useState(true);
   const [roundEnded, setRoundEnded] = useState(false);
+  const [showStrikeOverlay, setShowStrikeOverlay] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(
     questions[0]
   );
@@ -88,6 +90,11 @@ function GamePlay({
   };
 
   const handleWrongAnswer = () => {
+    setShowStrikeOverlay(true);
+  };
+
+  const handleStrikeComplete = () => {
+    setShowStrikeOverlay(false);
     const newStrikes = strikes + 1;
 
     if (newStrikes >= 3) {
@@ -224,6 +231,10 @@ function GamePlay({
           />
         )}
       </div>
+
+      {!isReadOnly && (
+        <StrikeOverlay show={showStrikeOverlay} onComplete={handleStrikeComplete} />
+      )}
     </div>
   );
 }

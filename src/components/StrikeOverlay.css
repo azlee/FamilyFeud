@@ -1,0 +1,78 @@
+.strike-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.2s ease-in;
+}
+
+.strike-animation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: strikeAppear 0.5s ease-out;
+}
+
+.strike-x {
+  font-size: 20rem;
+  font-weight: bold;
+  color: var(--danger);
+  text-shadow:
+    0 0 20px rgba(239, 68, 68, 0.8),
+    0 0 40px rgba(239, 68, 68, 0.6),
+    0 0 60px rgba(239, 68, 68, 0.4),
+    5px 5px 10px rgba(0, 0, 0, 0.5);
+  animation: pulse 0.5s ease-in-out infinite alternate;
+  transform-origin: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes strikeAppear {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .strike-x {
+    font-size: 12rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .strike-x {
+    font-size: 8rem;
+  }
+}
