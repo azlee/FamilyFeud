@@ -1,0 +1,37 @@
+.game-play {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.game-content {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-top: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.question-display {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: var(--primary-blue);
+  border-radius: 0.5rem;
+}
+
+.question-text {
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .game-content {
+    padding: 1rem;
+  }
+
+  .question-text {
+    font-size: 1.5rem;
+  }
+}

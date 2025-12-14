@@ -1,0 +1,103 @@
+.answer-card {
+  perspective: 1000px;
+  height: 80px;
+  cursor: pointer;
+}
+
+.answer-card.revealed .card-inner {
+  transform: rotateX(180deg);
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-front {
+  background: var(--primary-blue);
+  border: 3px solid var(--gold);
+}
+
+.card-front .answer-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--gold);
+}
+
+.card-back {
+  background: #2563eb;
+  transform: rotateX(180deg);
+  padding: 1rem;
+}
+
+.answer-content {
+  display: grid;
+  grid-template-columns: 50px 1fr 60px;
+  gap: 0.75rem;
+  align-items: center;
+  width: 100%;
+  color: white;
+}
+
+.card-back .answer-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.answer-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.answer-points {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  background: var(--gold);
+  color: var(--text-dark);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+}
+
+.answer-card:not(.revealed):hover .card-inner {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .answer-card {
+    height: 70px;
+  }
+
+  .answer-text {
+    font-size: 1rem;
+  }
+
+  .card-front .answer-number {
+    font-size: 2rem;
+  }
+
+  .card-back .answer-number {
+    font-size: 1.5rem;
+  }
+
+  .answer-points {
+    font-size: 1.25rem;
+  }
+}

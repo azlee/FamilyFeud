@@ -1,0 +1,102 @@
+.player-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin: 2rem 0;
+  border: 2px solid var(--border-color);
+}
+
+.current-turn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.turn-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary-blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.current-player-name {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--text-dark);
+}
+
+.strikes-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.strikes-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-transform: uppercase;
+}
+
+.strikes-container {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.strike {
+  width: 60px;
+  height: 60px;
+  border: 3px solid var(--border-color);
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: transparent;
+  background: white;
+  transition: all 0.3s ease;
+}
+
+.strike.active {
+  background: var(--danger);
+  color: white;
+  border-color: var(--danger);
+  transform: scale(1.1);
+  animation: strikeAppear 0.3s ease;
+}
+
+@keyframes strikeAppear {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .player-status {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .current-turn {
+    align-items: center;
+    text-align: center;
+  }
+
+  .strike {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+}

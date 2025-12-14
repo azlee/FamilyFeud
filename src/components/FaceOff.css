@@ -1,0 +1,232 @@
+.face-off {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.face-off-content {
+  background: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  min-height: 400px;
+}
+
+.face-off-title {
+  text-align: center;
+  color: var(--primary-red);
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.question-display-faceoff {
+  background: var(--primary-blue);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Disable clicking on answer cards during face-off */
+.face-off .answer-card {
+  pointer-events: none;
+  cursor: default;
+}
+
+.face-off .answer-board {
+  margin-bottom: 2rem;
+}
+
+.question-text-faceoff {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.phase-instruction {
+  text-align: center;
+  font-size: 1.25rem;
+  color: var(--text-dark);
+  margin-bottom: 1.5rem;
+}
+
+/* Buzzer Phase */
+.buzzer-phase {
+  margin-top: 2rem;
+}
+
+.buzzer-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.buzzer-btn {
+  background: linear-gradient(135deg, var(--primary-red) 0%, #b91c1c 100%);
+  border: 4px solid var(--gold);
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+  margin: 0 auto;
+}
+
+.buzzer-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 30px rgba(220, 38, 38, 0.6);
+}
+
+.buzzer-btn:active {
+  transform: scale(0.95);
+}
+
+.buzzer-icon {
+  font-size: 4rem;
+}
+
+.player-name-buzz {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Guess Phase */
+.guess-phase {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+
+.previous-guess {
+  background: var(--light-bg);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+}
+
+.previous-guess p {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.correct {
+  color: var(--success);
+  font-weight: bold;
+}
+
+.incorrect {
+  color: var(--danger);
+  font-weight: bold;
+}
+
+.guess-input {
+  width: 100%;
+  max-width: 500px;
+  font-size: 1.25rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* Pass or Play Phase */
+.pass-play-phase {
+  margin-top: 2rem;
+}
+
+.guesses-summary {
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.guess-result {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.winner-announcement {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.winner-text {
+  font-size: 2rem;
+  color: var(--primary-blue);
+  margin-bottom: 1rem;
+}
+
+.pass-play-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.pass-btn,
+.play-btn {
+  padding: 2rem 1rem;
+  font-size: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pass-btn small,
+.play-btn small {
+  font-size: 0.875rem;
+  font-weight: normal;
+  opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+  .face-off-title {
+    font-size: 2rem;
+  }
+
+  .question-text-faceoff {
+    font-size: 1.25rem;
+  }
+
+  .buzzer-buttons {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .buzzer-btn {
+    width: 160px;
+    height: 160px;
+  }
+
+  .buzzer-icon {
+    font-size: 3rem;
+  }
+
+  .player-name-buzz {
+    font-size: 1.25rem;
+  }
+
+  .pass-play-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .pass-btn,
+  .play-btn {
+    font-size: 1.5rem;
+  }
+}
