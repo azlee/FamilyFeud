@@ -1,6 +1,6 @@
-import { Answer } from '../types';
-import AnswerCard from './AnswerCard';
-import './AnswerBoard.css';
+import { Answer } from "../types";
+import "./AnswerBoard.css";
+import AnswerCard from "./AnswerCard";
 
 interface AnswerBoardProps {
   answers: Answer[];

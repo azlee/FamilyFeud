@@ -17,13 +17,17 @@ export interface Question {
   answers: Answer[];
 }
 
-export type GameMode = 'setup' | 'playing' | 'gameover';
+export type GameMode = "setup" | "playing" | "gameover";
 
-export type FaceOffPhase = 'buzzer' | 'firstGuess' | 'secondGuess' | 'passOrPlay';
+export type FaceOffPhase =
+  | "buzzer"
+  | "firstGuess"
+  | "secondGuess"
+  | "passOrPlay";
 
 export interface FaceOffResult {
   startingPlayerIndex: number;
-  passOrPlay: 'pass' | 'play';
+  passOrPlay: "pass" | "play";
   revealedAnswerIds: string[];
   pointsEarned: number;
 }

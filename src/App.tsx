@@ -1,28 +1,31 @@
-import { useState } from 'react';
-import { GameMode, Player, Question } from './types';
-import GameSetup from './components/GameSetup';
-import GamePlay from './components/GamePlay';
-import GameOver from './components/GameOver';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import GameOver from "./components/GameOver";
+import GamePlay from "./components/GamePlay";
+import GameSetup from "./components/GameSetup";
+import { GameMode, Player, Question } from "./types";
 
 function App() {
-  const [gameMode, setGameMode] = useState<GameMode>('setup');
+  const [gameMode, setGameMode] = useState<GameMode>("setup");
   const [players, setPlayers] = useState<Player[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  const handleStartGame = (gamePlayers: Player[], gameQuestions: Question[]) => {
+  const handleStartGame = (
+    gamePlayers: Player[],
+    gameQuestions: Question[]
+  ) => {
     setPlayers(gamePlayers);
     setQuestions(gameQuestions);
-    setGameMode('playing');
+    setGameMode("playing");
   };
 
   const handleGameOver = (finalPlayers: Player[]) => {
     setPlayers(finalPlayers);
-    setGameMode('gameover');
+    setGameMode("gameover");
   };
 
   const handlePlayAgain = () => {
-    setGameMode('setup');
+    setGameMode("setup");
     setPlayers([]);
     setQuestions([]);
   };
@@ -31,11 +34,9 @@ function App() {
     <div className="App">
       <h1 className="app-title">FAMILY FEUD</h1>
 
-      {gameMode === 'setup' && (
-        <GameSetup onStartGame={handleStartGame} />
-      )}
+      {gameMode === "setup" && <GameSetup onStartGame={handleStartGame} />}
 
-      {gameMode === 'playing' && (
+      {gameMode === "playing" && (
         <GamePlay
           players={players}
           questions={questions}
@@ -43,11 +44,16 @@ function App() {
         />
       )}
 
-      {gameMode === 'gameover' && (
-        <GameOver
-          players={players}
-          onPlayAgain={handlePlayAgain}
-        />
+      {gameMode === "gameover" && (
+        <div>
+          <GamePlay
+            players={players}
+            questions={questions}
+            onGameOver={handleGameOver}
+            isReadOnly
+          />
+          <GameOver players={players} onPlayAgain={handlePlayAgain} />
+        </div>
       )}
     </div>
   );

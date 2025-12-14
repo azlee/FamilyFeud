@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import { Player, Question, FaceOffResult } from '../types';
-import GameHeader from './GameHeader';
-import AnswerBoard from './AnswerBoard';
-import PlayerStatus from './PlayerStatus';
-import GameControls from './GameControls';
-import FaceOff from './FaceOff';
-import './GamePlay.css';
+import { useEffect, useState } from "react";
+import { FaceOffResult, Player, Question } from "../types";
+import AnswerBoard from "./AnswerBoard";
+import FaceOff from "./FaceOff";
+import GameControls from "./GameControls";
+import GameHeader from "./GameHeader";
+import "./GamePlay.css";
+import PlayerStatus from "./PlayerStatus";
 
 interface GamePlayProps {
   players: Player[];
   questions: Question[];
   onGameOver: (players: Player[]) => void;
+  isReadOnly?: boolean;
 }
 
-function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayProps) {
+function GamePlay({
+  players: initialPlayers,
+  questions,
+  onGameOver,
+  isReadOnly,
+}: GamePlayProps) {
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [currentRound, setCurrentRound] = useState(0);
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
@@ -22,7 +28,9 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
   const [strikes, setStrikes] = useState(0);
   const [stealMode, setStealMode] = useState(false);
   const [showFaceOff, setShowFaceOff] = useState(true);
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(questions[0]);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(
+    questions[0]
+  );
 
   useEffect(() => {
     setCurrentQuestion(questions[currentRound]);
@@ -37,14 +45,16 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
 
     // Mark face-off answers as revealed
     if (result.revealedAnswerIds.length > 0) {
-      const updatedAnswers = currentQuestion.answers.map(a =>
+      const updatedAnswers = currentQuestion.answers.map((a) =>
         result.revealedAnswerIds.includes(a.id) ? { ...a, revealed: true } : a
       );
       setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
 
       // Award points to the starting player
       const updatedPlayers = players.map((p, i) =>
-        i === result.startingPlayerIndex ? { ...p, score: p.score + result.pointsEarned } : p
+        i === result.startingPlayerIndex
+          ? { ...p, score: p.score + result.pointsEarned }
+          : p
       );
       setPlayers(updatedPlayers);
 
@@ -56,10 +66,10 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
   };
 
   const handleRevealAnswer = (answerId: string) => {
-    const answer = currentQuestion.answers.find(a => a.id === answerId);
+    const answer = currentQuestion.answers.find((a) => a.id === answerId);
     if (!answer || answer.revealed) return;
 
-    const updatedAnswers = currentQuestion.answers.map(a =>
+    const updatedAnswers = currentQuestion.answers.map((a) =>
       a.id === answerId ? { ...a, revealed: true } : a
     );
 
@@ -115,7 +125,8 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
 
   const nextRound = (playersToUse?: Player[]) => {
     // Use provided players or current state, ensure it's an array
-    const finalPlayers = playersToUse && Array.isArray(playersToUse) ? playersToUse : players;
+    const finalPlayers =
+      playersToUse && Array.isArray(playersToUse) ? playersToUse : players;
 
     // Check if we just completed the last round
     if (currentRound >= questions.length - 1) {
@@ -139,9 +150,9 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
     return null;
   }
 
-  const allAnswersRevealed = currentQuestion.answers.every(a => a.revealed);
+  const allAnswersRevealed = currentQuestion.answers.every((a) => a.revealed);
 
-  if (showFaceOff) {
+  if (showFaceOff && !isReadOnly) {
     return (
       <div className="game-play">
         <GameHeader
@@ -172,25 +183,33 @@ function GamePlay({ players: initialPlayers, questions, onGameOver }: GamePlayPr
         </div>
 
         <AnswerBoard
-          answers={currentQuestion.answers}
+          answers={
+            isReadOnly
+              ? currentQuestion.answers.map((a) => ({ ...a, revealed: true }))
+              : currentQuestion.answers
+          }
           onRevealAnswer={handleRevealAnswer}
         />
 
-        <PlayerStatus
-          currentPlayer={currentPlayer}
-          strikes={strikes}
-          stealMode={stealMode}
-        />
+        {!isReadOnly && (
+          <PlayerStatus
+            currentPlayer={currentPlayer}
+            strikes={strikes}
+            stealMode={stealMode}
+          />
+        )}
 
-        <GameControls
-          onWrongAnswer={handleWrongAnswer}
-          onStealSuccess={handleStealSuccess}
-          onStealFail={handleStealFail}
-          onNextRound={nextRound}
-          stealMode={stealMode}
-          allAnswersRevealed={allAnswersRevealed}
-          isLastRound={currentRound >= questions.length - 1}
-        />
+        {!isReadOnly && (
+          <GameControls
+            onWrongAnswer={handleWrongAnswer}
+            onStealSuccess={handleStealSuccess}
+            onStealFail={handleStealFail}
+            onNextRound={nextRound}
+            stealMode={stealMode}
+            allAnswersRevealed={allAnswersRevealed}
+            isLastRound={currentRound >= questions.length - 1}
+          />
+        )}
       </div>
     </div>
   );

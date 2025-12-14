@@ -1,5 +1,5 @@
-import { Player } from '../types';
-import './GameOver.css';
+import { Player } from "../types";
+import "./GameOver.css";
 
 interface GameOverProps {
   players: Player[];
