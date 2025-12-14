@@ -233,7 +233,11 @@ function GamePlay({
       </div>
 
       {!isReadOnly && (
-        <StrikeOverlay show={showStrikeOverlay} onComplete={handleStrikeComplete} />
+        <StrikeOverlay
+          show={showStrikeOverlay}
+          strikeCount={strikes + 1}
+          onComplete={handleStrikeComplete}
+        />
       )}
     </div>
   );

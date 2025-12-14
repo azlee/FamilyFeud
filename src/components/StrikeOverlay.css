@@ -17,7 +17,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: strikeAppear 0.5s ease-out;
+}
+
+.strike-container {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
 }
 
 .strike-x {
@@ -29,8 +35,9 @@
     0 0 40px rgba(239, 68, 68, 0.6),
     0 0 60px rgba(239, 68, 68, 0.4),
     5px 5px 10px rgba(0, 0, 0, 0.5);
-  animation: pulse 0.5s ease-in-out infinite alternate;
+  animation: strikeAppear 0.5s ease-out forwards, pulse 0.5s ease-in-out 0.5s infinite alternate;
   transform-origin: center;
+  opacity: 0;
 }
 
 @keyframes fadeIn {
@@ -65,14 +72,52 @@
   }
 }
 
+/* Adjust size based on number of strikes */
+.strike-count-2 .strike-x {
+  font-size: 16rem;
+}
+
+.strike-count-3 .strike-x {
+  font-size: 14rem;
+}
+
+.strike-count-2,
+.strike-count-3 {
+  gap: 1.5rem;
+}
+
 @media (max-width: 768px) {
   .strike-x {
     font-size: 12rem;
+  }
+
+  .strike-count-2 .strike-x {
+    font-size: 10rem;
+  }
+
+  .strike-count-3 .strike-x {
+    font-size: 8rem;
+  }
+
+  .strike-container {
+    gap: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .strike-x {
     font-size: 8rem;
+  }
+
+  .strike-count-2 .strike-x {
+    font-size: 6rem;
+  }
+
+  .strike-count-3 .strike-x {
+    font-size: 5rem;
+  }
+
+  .strike-container {
+    gap: 0.5rem;
   }
 }

@@ -3,10 +3,11 @@ import './StrikeOverlay.css';
 
 interface StrikeOverlayProps {
   show: boolean;
+  strikeCount: number;
   onComplete: () => void;
 }
 
-function StrikeOverlay({ show, onComplete }: StrikeOverlayProps) {
+function StrikeOverlay({ show, strikeCount, onComplete }: StrikeOverlayProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,13 @@ function StrikeOverlay({ show, onComplete }: StrikeOverlayProps) {
   return (
     <div className="strike-overlay">
       <div className="strike-animation">
-        <div className="strike-x">X</div>
+        <div className={`strike-container strike-count-${strikeCount}`}>
+          {Array.from({ length: strikeCount }).map((_, index) => (
+            <div key={index} className="strike-x" style={{ animationDelay: `${index * 0.1}s` }}>
+              X
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
