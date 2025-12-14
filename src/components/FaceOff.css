@@ -2,7 +2,6 @@
   max-width: 900px;
   margin: 20px auto;
 }
-
 .face-off-content {
   background: white;
   border-radius: 1rem;
@@ -22,10 +21,60 @@
 }
 
 .question-display-faceoff {
-  background: var(--primary-blue);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
+  perspective: 1000px;
+  min-height: 120px;
   margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.question-display-faceoff.revealed .card-inner {
+  transform: rotateX(180deg);
+}
+
+.question-display-faceoff .card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.question-display-faceoff .card-front,
+.question-display-faceoff .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  backface-visibility: hidden;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.question-display-faceoff .card-front {
+  background: var(--primary-blue);
+  border: 3px solid var(--gold);
+}
+
+.question-display-faceoff .card-back {
+  background: var(--primary-blue);
+  transform: rotateX(180deg);
+}
+
+.question-prompt {
+  color: var(--gold);
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 0;
+}
+
+.question-display-faceoff:not(.revealed):hover .card-inner {
+  transform: scale(1.02);
 }
 
 /* Disable clicking on answer cards during face-off */

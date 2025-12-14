@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Question, Player } from '../types';
-import PlayerSetup from './PlayerSetup';
-import QuestionForm from './QuestionForm';
-import './GameSetup.css';
+import { useState } from "react";
+import { Player, Question } from "../types";
+import "./GameSetup.css";
+import PlayerSetup from "./PlayerSetup";
+import QuestionForm from "./QuestionForm";
 
 interface GameSetupProps {
   onStartGame: (players: Player[], questions: Question[]) => void;
@@ -10,8 +10,8 @@ interface GameSetupProps {
 
 function GameSetup({ onStartGame }: GameSetupProps) {
   const [players, setPlayers] = useState<Player[]>([
-    { id: '1', name: '', score: 0 },
-    { id: '2', name: '', score: 0 }
+    { id: "1", name: "", score: 0 },
+    { id: "2", name: "", score: 0 },
   ]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [showQuestionForm, setShowQuestionForm] = useState(false);
@@ -23,7 +23,7 @@ function GameSetup({ onStartGame }: GameSetupProps) {
 
   const handleAddQuestion = (question: Question) => {
     if (editingQuestion) {
-      setQuestions(questions.map(q => q.id === question.id ? question : q));
+      setQuestions(questions.map((q) => (q.id === question.id ? question : q)));
       setEditingQuestion(null);
     } else {
       setQuestions([...questions, question]);
@@ -37,7 +37,7 @@ function GameSetup({ onStartGame }: GameSetupProps) {
   };
 
   const handleDeleteQuestion = (questionId: string) => {
-    setQuestions(questions.filter(q => q.id !== questionId));
+    setQuestions(questions.filter((q) => q.id !== questionId));
   };
 
   const handleCancelForm = () => {
@@ -45,7 +45,8 @@ function GameSetup({ onStartGame }: GameSetupProps) {
     setEditingQuestion(null);
   };
 
-  const canStartGame = players.every(p => p.name.trim() !== '') && questions.length > 0;
+  const canStartGame =
+    players.every((p) => p.name.trim() !== "") && questions.length > 0;
 
   const handleStartGame = () => {
     if (canStartGame) {
@@ -63,7 +64,10 @@ function GameSetup({ onStartGame }: GameSetupProps) {
         <div className="section-header">
           <h3>Questions ({questions.length})</h3>
           {!showQuestionForm && (
-            <button className="btn-primary" onClick={() => setShowQuestionForm(true)}>
+            <button
+              className="btn-primary"
+              onClick={() => setShowQuestionForm(true)}
+            >
               Add Question
             </button>
           )}
@@ -83,15 +87,21 @@ function GameSetup({ onStartGame }: GameSetupProps) {
               <div className="question-header">
                 <h4>Question {index + 1}</h4>
                 <div className="question-actions">
-                  <button className="btn-secondary" onClick={() => handleEditQuestion(question)}>
+                  <button
+                    className="btn-secondary"
+                    onClick={() => handleEditQuestion(question)}
+                  >
                     Edit
                   </button>
-                  <button className="btn-danger" onClick={() => handleDeleteQuestion(question.id)}>
+                  <button
+                    className="btn-danger"
+                    onClick={() => handleDeleteQuestion(question.id)}
+                  >
                     Delete
                   </button>
                 </div>
               </div>
-              <p className="question-text">{question.question}</p>
+              <p className="question-text-setup">{question.question}</p>
               <div className="answers-preview">
                 {question.answers.map((answer, i) => (
                   <div key={answer.id} className="answer-preview">

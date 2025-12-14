@@ -1,8 +1,14 @@
-import { useState } from 'react';
-import { Player, Question, Answer, FaceOffPhase, FaceOffResult } from '../types';
-import AnswerBoard from './AnswerBoard';
-import { findFuzzyMatch } from '../utils/fuzzyMatch';
-import './FaceOff.css';
+import { useState } from "react";
+import {
+  Answer,
+  FaceOffPhase,
+  FaceOffResult,
+  Player,
+  Question,
+} from "../types";
+import { findFuzzyMatch } from "../utils/fuzzyMatch";
+import AnswerBoard from "./AnswerBoard";
+import "./FaceOff.css";
 
 interface FaceOffProps {
   players: Player[];
@@ -11,20 +17,24 @@ interface FaceOffProps {
 }
 
 function FaceOff({ players, question, onComplete }: FaceOffProps) {
-  const [phase, setPhase] = useState<FaceOffPhase>('buzzer');
+  const [phase, setPhase] = useState<FaceOffPhase>("buzzer");
   const [firstBuzzer, setFirstBuzzer] = useState<number | null>(null);
   const [secondBuzzer, setSecondBuzzer] = useState<number | null>(null);
-  const [firstGuess, setFirstGuess] = useState('');
+  const [firstGuess, setFirstGuess] = useState("");
   const [firstGuessAnswer, setFirstGuessAnswer] = useState<Answer | null>(null);
-  const [secondGuess, setSecondGuess] = useState('');
-  const [secondGuessAnswer, setSecondGuessAnswer] = useState<Answer | null>(null);
-  const [winningPlayerIndex, setWinningPlayerIndex] = useState<number | null>(null);
+  const [secondGuess, setSecondGuess] = useState("");
+  const [secondGuessAnswer, setSecondGuessAnswer] = useState<Answer | null>(
+    null
+  );
+  const [winningPlayerIndex, setWinningPlayerIndex] = useState<number | null>(
+    null
+  );
   const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
 
   const handleBuzz = (playerIndex: number) => {
     if (firstBuzzer === null) {
       setFirstBuzzer(playerIndex);
-      setPhase('firstGuess');
+      setPhase("firstGuess");
     } else if (secondBuzzer === null) {
       setSecondBuzzer(playerIndex);
     }
@@ -42,24 +52,26 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
 
     // Mark answer as revealed on the board
     if (matchedAnswer) {
-      const updatedAnswers = currentQuestion.answers.map(a =>
+      const updatedAnswers = currentQuestion.answers.map((a) =>
         a.id === matchedAnswer.id ? { ...a, revealed: true } : a
       );
       setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
 
       // Check if it's the top answer
-      const topAnswer = [...question.answers].sort((a, b) => b.points - a.points)[0];
+      const topAnswer = [...question.answers].sort(
+        (a, b) => b.points - a.points
+      )[0];
       if (matchedAnswer.id === topAnswer.id) {
         // First player got top answer, they win
         setWinningPlayerIndex(firstBuzzer);
-        setPhase('passOrPlay');
+        setPhase("passOrPlay");
       } else {
         // Not top answer, second player gets to guess
-        setPhase('secondGuess');
+        setPhase("secondGuess");
       }
     } else {
       // First player wrong, second player gets to guess
-      setPhase('secondGuess');
+      setPhase("secondGuess");
     }
   };
 
@@ -71,7 +83,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
 
     // Mark answer as revealed on the board
     if (matchedAnswer) {
-      const updatedAnswers = currentQuestion.answers.map(a =>
+      const updatedAnswers = currentQuestion.answers.map((a) =>
         a.id === matchedAnswer.id ? { ...a, revealed: true } : a
       );
       setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
@@ -96,16 +108,16 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
       }
     }
 
-    setPhase('passOrPlay');
+    setPhase("passOrPlay");
   };
 
-  const handlePassOrPlay = (choice: 'pass' | 'play') => {
+  const handlePassOrPlay = (choice: "pass" | "play") => {
     if (winningPlayerIndex === null) return;
 
     let startingPlayerIndex = winningPlayerIndex;
 
     // If they pass, the other player plays
-    if (choice === 'pass') {
+    if (choice === "pass") {
       startingPlayerIndex = winningPlayerIndex === 0 ? 1 : 0;
     }
 
@@ -126,16 +138,28 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
       startingPlayerIndex,
       passOrPlay: choice,
       revealedAnswerIds,
-      pointsEarned
+      pointsEarned,
     });
   };
-
+  const [isQuestionRevealed, setIsQuestionRevealed] = useState(false);
   return (
     <div className="face-off">
       <div className="face-off-content">
         <h2 className="face-off-title">FACE OFF!</h2>
-        <div className="question-display-faceoff">
-          <p className="question-text-faceoff">{question.question}</p>
+        <div
+          className={`question-display-faceoff ${
+            isQuestionRevealed ? "revealed" : ""
+          }`}
+          onClick={() => setIsQuestionRevealed(true)}
+        >
+          <div className="card-inner">
+            <div className="card-front">
+              <p className="question-prompt">Click to reveal question</p>
+            </div>
+            <div className="card-back">
+              <p className="question-text-faceoff">{question.question}</p>
+            </div>
+          </div>
         </div>
 
         <AnswerBoard
@@ -143,7 +167,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
           onRevealAnswer={() => {}}
         />
 
-        {phase === 'buzzer' && (
+        {phase === "buzzer" && (
           <div className="buzzer-phase">
             <p className="phase-instruction">Who buzzed in first?</p>
             <div className="buzzer-buttons">
@@ -165,7 +189,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
           </div>
         )}
 
-        {phase === 'firstGuess' && firstBuzzer !== null && (
+        {phase === "firstGuess" && firstBuzzer !== null && (
           <div className="guess-phase">
             <p className="phase-instruction">
               <strong>{players[firstBuzzer].name}</strong>, make your guess:
@@ -178,7 +202,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
               className="guess-input"
               autoFocus
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   handleFirstGuessSubmit();
                 }
               }}
@@ -189,13 +213,17 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
           </div>
         )}
 
-        {phase === 'secondGuess' && secondBuzzer !== null && (
+        {phase === "secondGuess" && secondBuzzer !== null && (
           <div className="guess-phase">
             <div className="previous-guess">
               <p>
-                <strong>{players[firstBuzzer!].name}</strong> guessed: "{firstGuess}"
+                <strong>{players[firstBuzzer!].name}</strong> guessed: "
+                {firstGuess}"
                 {firstGuessAnswer ? (
-                  <span className="correct"> ✓ ({firstGuessAnswer.points} points)</span>
+                  <span className="correct">
+                    {" "}
+                    ✓ ({firstGuessAnswer.points} points)
+                  </span>
                 ) : (
                   <span className="incorrect"> ✗ (Not on board)</span>
                 )}
@@ -212,7 +240,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
               className="guess-input"
               autoFocus
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   handleSecondGuessSubmit();
                 }
               }}
@@ -223,13 +251,16 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
           </div>
         )}
 
-        {phase === 'passOrPlay' && winningPlayerIndex !== null && (
+        {phase === "passOrPlay" && winningPlayerIndex !== null && (
           <div className="pass-play-phase">
             <div className="guesses-summary">
               {firstGuessAnswer && (
                 <p className="guess-result">
                   <strong>{players[firstBuzzer!].name}</strong>: "{firstGuess}"
-                  <span className="correct"> ✓ ({firstGuessAnswer.points} points)</span>
+                  <span className="correct">
+                    {" "}
+                    ✓ ({firstGuessAnswer.points} points)
+                  </span>
                 </p>
               )}
               {!firstGuessAnswer && firstGuess && (
@@ -240,21 +271,26 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
               )}
               {secondGuessAnswer && (
                 <p className="guess-result">
-                  <strong>{players[secondBuzzer!].name}</strong>: "{secondGuess}"
-                  <span className="correct"> ✓ ({secondGuessAnswer.points} points)</span>
+                  <strong>{players[secondBuzzer!].name}</strong>: "{secondGuess}
+                  "
+                  <span className="correct">
+                    {" "}
+                    ✓ ({secondGuessAnswer.points} points)
+                  </span>
                 </p>
               )}
               {!secondGuessAnswer && secondGuess && (
                 <p className="guess-result">
-                  <strong>{players[secondBuzzer!].name}</strong>: "{secondGuess}"
-                  <span className="incorrect"> ✗</span>
+                  <strong>{players[secondBuzzer!].name}</strong>: "{secondGuess}
+                  "<span className="incorrect"> ✗</span>
                 </p>
               )}
             </div>
 
             <div className="winner-announcement">
               <p className="winner-text">
-                <strong>{players[winningPlayerIndex].name}</strong> controls the board!
+                <strong>{players[winningPlayerIndex].name}</strong> controls the
+                board!
               </p>
               <p className="phase-instruction">Do you want to PASS or PLAY?</p>
             </div>
@@ -262,14 +298,17 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
             <div className="pass-play-buttons">
               <button
                 className="btn-danger pass-btn"
-                onClick={() => handlePassOrPlay('pass')}
+                onClick={() => handlePassOrPlay("pass")}
               >
                 PASS
-                <small>Give control to {players[winningPlayerIndex === 0 ? 1 : 0].name}</small>
+                <small>
+                  Give control to{" "}
+                  {players[winningPlayerIndex === 0 ? 1 : 0].name}
+                </small>
               </button>
               <button
                 className="btn-success play-btn"
-                onClick={() => handlePassOrPlay('play')}
+                onClick={() => handlePassOrPlay("play")}
               >
                 PLAY
                 <small>Your team plays</small>

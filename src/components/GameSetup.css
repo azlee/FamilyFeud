@@ -65,6 +65,14 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
 }
+
+.question-text-setup {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--text-dark);
+}
+
 .answers-preview {
   display: flex;
   flex-direction: column;
