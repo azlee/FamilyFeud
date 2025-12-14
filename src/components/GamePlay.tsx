@@ -28,6 +28,7 @@ function GamePlay({
   const [strikes, setStrikes] = useState(0);
   const [stealMode, setStealMode] = useState(false);
   const [showFaceOff, setShowFaceOff] = useState(true);
+  const [roundEnded, setRoundEnded] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(
     questions[0]
   );
@@ -91,7 +92,7 @@ function GamePlay({
 
     if (newStrikes >= 3) {
       if (stealMode) {
-        nextRound();
+        setRoundEnded(true);
       } else {
         setStealMode(true);
         setCurrentPlayerIndex(otherPlayerIndex);
@@ -116,11 +117,19 @@ function GamePlay({
     });
     setPlayers(updatedPlayers);
 
-    nextRound(updatedPlayers);
+    setRoundEnded(true);
   };
 
   const handleStealFail = () => {
-    nextRound();
+    setRoundEnded(true);
+  };
+
+  const handleRevealAllAnswers = () => {
+    const updatedAnswers = currentQuestion.answers.map((a) => ({
+      ...a,
+      revealed: true,
+    }));
+    setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
   };
 
   const nextRound = (playersToUse?: Player[]) => {
@@ -142,6 +151,7 @@ function GamePlay({
       setStrikes(0);
       setStealMode(false);
       setShowFaceOff(true);
+      setRoundEnded(false);
     }
   };
 
@@ -206,8 +216,10 @@ function GamePlay({
             onStealSuccess={handleStealSuccess}
             onStealFail={handleStealFail}
             onNextRound={nextRound}
+            onRevealAllAnswers={handleRevealAllAnswers}
             stealMode={stealMode}
             allAnswersRevealed={allAnswersRevealed}
+            roundEnded={roundEnded}
             isLastRound={currentRound >= questions.length - 1}
           />
         )}

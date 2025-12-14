@@ -92,3 +92,8 @@ input:focus, textarea:focus {
   background-color: #6b7280;
   color: var(--text-light);
 }
+
+.btn-warning {
+  background-color: var(--gold);
+  color: var(--text-dark);
+}

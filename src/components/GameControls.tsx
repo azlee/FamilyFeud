@@ -5,8 +5,10 @@ interface GameControlsProps {
   onStealSuccess: () => void;
   onStealFail: () => void;
   onNextRound: () => void;
+  onRevealAllAnswers: () => void;
   stealMode: boolean;
   allAnswersRevealed: boolean;
+  roundEnded: boolean;
   isLastRound: boolean;
 }
 
@@ -15,19 +17,21 @@ function GameControls({
   onStealSuccess,
   onStealFail,
   onNextRound,
+  onRevealAllAnswers,
   stealMode,
   allAnswersRevealed,
+  roundEnded,
   isLastRound
 }: GameControlsProps) {
   return (
     <div className="game-controls">
-      {!allAnswersRevealed && !stealMode && (
+      {!allAnswersRevealed && !stealMode && !roundEnded && (
         <button className="btn-danger control-btn" onClick={onWrongAnswer}>
           Wrong Answer (Strike)
         </button>
       )}
 
-      {stealMode && (
+      {stealMode && !roundEnded && (
         <>
           <button className="btn-success control-btn" onClick={onStealSuccess}>
             Steal Successful
@@ -36,6 +40,12 @@ function GameControls({
             Steal Failed
           </button>
         </>
+      )}
+
+      {roundEnded && !allAnswersRevealed && (
+        <button className="btn-warning control-btn" onClick={onRevealAllAnswers}>
+          Reveal Remaining Answers
+        </button>
       )}
 
       {allAnswersRevealed && (
