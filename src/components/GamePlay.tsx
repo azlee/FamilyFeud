@@ -31,6 +31,7 @@ function GamePlay({
   const [showFaceOff, setShowFaceOff] = useState(true);
   const [roundEnded, setRoundEnded] = useState(false);
   const [showStrikeOverlay, setShowStrikeOverlay] = useState(false);
+  const [strikeType, setStrikeType] = useState<'normal' | 'stealFail'>('normal');
   const [currentQuestion, setCurrentQuestion] = useState<Question>(
     questions[0]
   );
@@ -90,23 +91,29 @@ function GamePlay({
   };
 
   const handleWrongAnswer = () => {
+    setStrikeType('normal');
     setShowStrikeOverlay(true);
   };
 
   const handleStrikeComplete = () => {
     setShowStrikeOverlay(false);
-    const newStrikes = strikes + 1;
 
-    if (newStrikes >= 3) {
-      if (stealMode) {
-        setRoundEnded(true);
-      } else {
-        setStealMode(true);
-        setCurrentPlayerIndex(otherPlayerIndex);
-        setStrikes(0);
-      }
+    if (strikeType === 'stealFail') {
+      setRoundEnded(true);
     } else {
-      setStrikes(newStrikes);
+      const newStrikes = strikes + 1;
+
+      if (newStrikes >= 3) {
+        if (stealMode) {
+          setRoundEnded(true);
+        } else {
+          setStealMode(true);
+          setCurrentPlayerIndex(otherPlayerIndex);
+          setStrikes(0);
+        }
+      } else {
+        setStrikes(newStrikes);
+      }
     }
   };
 
@@ -128,7 +135,8 @@ function GamePlay({
   };
 
   const handleStealFail = () => {
-    setRoundEnded(true);
+    setStrikeType('stealFail');
+    setShowStrikeOverlay(true);
   };
 
   const handleRevealAllAnswers = () => {
@@ -235,7 +243,7 @@ function GamePlay({
       {!isReadOnly && (
         <StrikeOverlay
           show={showStrikeOverlay}
-          strikeCount={strikes + 1}
+          strikeCount={strikeType === 'stealFail' ? 1 : strikes + 1}
           onComplete={handleStrikeComplete}
         />
       )}

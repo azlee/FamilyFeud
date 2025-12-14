@@ -9,6 +9,7 @@ import {
 import { findFuzzyMatch } from "../utils/fuzzyMatch";
 import AnswerBoard from "./AnswerBoard";
 import "./FaceOff.css";
+import StrikeOverlay from "./StrikeOverlay";
 
 interface FaceOffProps {
   players: Player[];
@@ -31,6 +32,8 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
   );
   const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
   const [isQuestionRevealed, setIsQuestionRevealed] = useState(false);
+  const [showStrikeOverlay, setShowStrikeOverlay] = useState(false);
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
 
   useEffect(() => {
     setCurrentQuestion(question);
@@ -51,6 +54,14 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
       setPhase("firstGuess");
     } else if (secondBuzzer === null) {
       setSecondBuzzer(playerIndex);
+    }
+  };
+
+  const handleStrikeComplete = () => {
+    setShowStrikeOverlay(false);
+    if (pendingAction) {
+      pendingAction();
+      setPendingAction(null);
     }
   };
 
@@ -84,8 +95,9 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
         setPhase("secondGuess");
       }
     } else {
-      // First player wrong, second player gets to guess
-      setPhase("secondGuess");
+      // First player wrong, show strike overlay then second player gets to guess
+      setPendingAction(() => () => setPhase("secondGuess"));
+      setShowStrikeOverlay(true);
     }
   };
 
@@ -95,34 +107,45 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
 
     setSecondGuessAnswer(matchedAnswer || null);
 
-    // Mark answer as revealed on the board
-    if (matchedAnswer) {
-      const updatedAnswers = currentQuestion.answers.map((a) =>
-        a.id === matchedAnswer.id ? { ...a, revealed: true } : a
-      );
-      setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
-    }
-
-    // Compare answers
-    if (!firstGuessAnswer && !matchedAnswer) {
-      // Both wrong, first buzzer wins
-      setWinningPlayerIndex(firstBuzzer);
-    } else if (firstGuessAnswer && !matchedAnswer) {
-      // First correct, second wrong
-      setWinningPlayerIndex(firstBuzzer);
-    } else if (!firstGuessAnswer && matchedAnswer) {
-      // First wrong, second correct
-      setWinningPlayerIndex(secondBuzzer);
-    } else if (firstGuessAnswer && matchedAnswer) {
-      // Both correct, compare points
-      if (matchedAnswer.points > firstGuessAnswer.points) {
-        setWinningPlayerIndex(secondBuzzer);
-      } else {
-        setWinningPlayerIndex(firstBuzzer);
+    const finishSecondGuess = (answer: Answer | null) => {
+      // Mark answer as revealed on the board
+      if (answer) {
+        const updatedAnswers = currentQuestion.answers.map((a) =>
+          a.id === answer.id ? { ...a, revealed: true } : a
+        );
+        setCurrentQuestion({ ...currentQuestion, answers: updatedAnswers });
       }
-    }
 
-    setPhase("passOrPlay");
+      // Compare answers
+      if (!firstGuessAnswer && !answer) {
+        // Both wrong, first buzzer wins
+        setWinningPlayerIndex(firstBuzzer);
+      } else if (firstGuessAnswer && !answer) {
+        // First correct, second wrong
+        setWinningPlayerIndex(firstBuzzer);
+      } else if (!firstGuessAnswer && answer) {
+        // First wrong, second correct
+        setWinningPlayerIndex(secondBuzzer);
+      } else if (firstGuessAnswer && answer) {
+        // Both correct, compare points
+        if (answer.points > firstGuessAnswer.points) {
+          setWinningPlayerIndex(secondBuzzer);
+        } else {
+          setWinningPlayerIndex(firstBuzzer);
+        }
+      }
+
+      setPhase("passOrPlay");
+    };
+
+    if (!matchedAnswer) {
+      // Second player wrong, show strike overlay
+      setPendingAction(() => () => finishSecondGuess(null));
+      setShowStrikeOverlay(true);
+    } else {
+      // Second player correct, continue normally
+      finishSecondGuess(matchedAnswer);
+    }
   };
 
   const handlePassOrPlay = (choice: "pass" | "play") => {
@@ -331,6 +354,12 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
           </div>
         )}
       </div>
+
+      <StrikeOverlay
+        show={showStrikeOverlay}
+        strikeCount={1}
+        onComplete={handleStrikeComplete}
+      />
     </div>
   );
 }
