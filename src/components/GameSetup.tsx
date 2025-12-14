@@ -3,6 +3,7 @@ import { Player, Question } from "../types";
 import "./GameSetup.css";
 import PlayerSetup from "./PlayerSetup";
 import QuestionForm from "./QuestionForm";
+import Papa from "papaparse";
 
 interface GameSetupProps {
   onStartGame: (players: Player[], questions: Question[]) => void;
@@ -45,6 +46,70 @@ function GameSetup({ onStartGame }: GameSetupProps) {
     setEditingQuestion(null);
   };
 
+  const handleCSVUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        try {
+          const parsedQuestions: Question[] = [];
+
+          results.data.forEach((row: any, index: number) => {
+            if (!row.Question || row.Question.trim() === "") {
+              return;
+            }
+
+            const answers = [];
+            let answerIndex = 1;
+
+            while (row[`Answer ${answerIndex}`]) {
+              const answerText = row[`Answer ${answerIndex}`];
+              const answerPoints = parseInt(row[`Points ${answerIndex}`] || "0");
+
+              if (answerText && answerText.trim() !== "") {
+                answers.push({
+                  id: `${Date.now()}-${index}-${answerIndex}`,
+                  text: answerText.trim(),
+                  points: answerPoints,
+                  revealed: false,
+                });
+              }
+
+              answerIndex++;
+            }
+
+            if (answers.length > 0) {
+              parsedQuestions.push({
+                id: `${Date.now()}-${index}`,
+                question: row.Question.trim(),
+                answers: answers,
+              });
+            }
+          });
+
+          if (parsedQuestions.length > 0) {
+            setQuestions([...questions, ...parsedQuestions]);
+            alert(`Successfully imported ${parsedQuestions.length} question(s)!`);
+          } else {
+            alert("No valid questions found in CSV file.");
+          }
+        } catch (error) {
+          alert("Error parsing CSV file. Please check the format.");
+          console.error("CSV parsing error:", error);
+        }
+      },
+      error: (error) => {
+        alert("Error reading CSV file: " + error.message);
+        console.error("CSV reading error:", error);
+      },
+    });
+
+    event.target.value = "";
+  };
+
   const canStartGame =
     players.every((p) => p.name.trim() !== "") && questions.length > 0;
 
@@ -64,12 +129,23 @@ function GameSetup({ onStartGame }: GameSetupProps) {
         <div className="section-header">
           <h3>Questions ({questions.length})</h3>
           {!showQuestionForm && (
-            <button
-              className="btn-primary"
-              onClick={() => setShowQuestionForm(true)}
-            >
-              Add Question
-            </button>
+            <div className="question-actions-group">
+              <button
+                className="btn-primary"
+                onClick={() => setShowQuestionForm(true)}
+              >
+                Add Question
+              </button>
+              <label className="btn-secondary csv-upload-btn">
+                Import CSV
+                <input
+                  type="file"
+                  accept=".csv"
+                  onChange={handleCSVUpload}
+                  style={{ display: "none" }}
+                />
+              </label>
+            </div>
           )}
         </div>
 

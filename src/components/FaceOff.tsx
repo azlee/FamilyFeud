@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Answer,
   FaceOffPhase,
@@ -30,6 +30,20 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
     null
   );
   const [currentQuestion, setCurrentQuestion] = useState<Question>(question);
+  const [isQuestionRevealed, setIsQuestionRevealed] = useState(false);
+
+  useEffect(() => {
+    setCurrentQuestion(question);
+    setPhase("buzzer");
+    setFirstBuzzer(null);
+    setSecondBuzzer(null);
+    setFirstGuess("");
+    setFirstGuessAnswer(null);
+    setSecondGuess("");
+    setSecondGuessAnswer(null);
+    setWinningPlayerIndex(null);
+    setIsQuestionRevealed(false);
+  }, [question]);
 
   const handleBuzz = (playerIndex: number) => {
     if (firstBuzzer === null) {
@@ -141,7 +155,7 @@ function FaceOff({ players, question, onComplete }: FaceOffProps) {
       pointsEarned,
     });
   };
-  const [isQuestionRevealed, setIsQuestionRevealed] = useState(false);
+
   return (
     <div className="face-off">
       <div className="face-off-content">

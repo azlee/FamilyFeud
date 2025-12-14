@@ -161,6 +161,7 @@ function GamePlay({
           totalRounds={questions.length}
         />
         <FaceOff
+          key={`faceoff-${currentRound}`}
           players={players}
           question={currentQuestion}
           onComplete={handleFaceOffComplete}
