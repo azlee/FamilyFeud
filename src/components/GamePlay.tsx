@@ -140,7 +140,10 @@ function GamePlay({
 
     // Check if all answers are now revealed and trigger confetti
     const allRevealed = updatedAnswers.every((a) => a.revealed);
-    if (allRevealed && !stealMode) {
+    if (allRevealed) {
+      setShowConfetti(true);
+    } else if (stealMode) {
+      // Trigger confetti when stealing team reveals any correct answer
       setShowConfetti(true);
     }
   };
@@ -186,7 +189,6 @@ function GamePlay({
     });
     setPlayers(updatedPlayers);
 
-    setShowConfetti(true);
     setRoundEnded(true);
   };
 
