@@ -40,6 +40,21 @@ function GamePlay({
     setCurrentQuestion(questions[currentRound]);
   }, [currentRound, questions]);
 
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() === 'x' && !isReadOnly && !showFaceOff) {
+        const allRevealed = currentQuestion.answers.every((a) => a.revealed);
+        if (!allRevealed && !stealMode && !roundEnded) {
+          setStrikeType('normal');
+          setShowStrikeOverlay(true);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [currentQuestion, stealMode, roundEnded, isReadOnly, showFaceOff]);
+
   const currentPlayer = players[currentPlayerIndex];
   const otherPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
 

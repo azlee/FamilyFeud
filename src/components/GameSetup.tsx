@@ -1,9 +1,9 @@
+import Papa from "papaparse";
 import { useState } from "react";
 import { Player, Question } from "../types";
 import "./GameSetup.css";
 import PlayerSetup from "./PlayerSetup";
 import QuestionForm from "./QuestionForm";
-import Papa from "papaparse";
 
 interface GameSetupProps {
   onStartGame: (players: Player[], questions: Question[]) => void;
@@ -67,7 +67,9 @@ function GameSetup({ onStartGame }: GameSetupProps) {
 
             while (row[`Answer ${answerIndex}`]) {
               const answerText = row[`Answer ${answerIndex}`];
-              const answerPoints = parseInt(row[`Points ${answerIndex}`] || "0");
+              const answerPoints = parseInt(
+                row[`Points ${answerIndex}`] || "0"
+              );
 
               if (answerText && answerText.trim() !== "") {
                 answers.push({
@@ -92,7 +94,6 @@ function GameSetup({ onStartGame }: GameSetupProps) {
 
           if (parsedQuestions.length > 0) {
             setQuestions([...questions, ...parsedQuestions]);
-            alert(`Successfully imported ${parsedQuestions.length} question(s)!`);
           } else {
             alert("No valid questions found in CSV file.");
           }
