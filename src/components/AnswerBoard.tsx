@@ -1,6 +1,7 @@
 import { Answer } from "../types";
 import "./AnswerBoard.css";
 import AnswerCard from "./AnswerCard";
+import { useEffect } from "react";
 
 interface AnswerBoardProps {
   answers: Answer[];
@@ -9,6 +10,25 @@ interface AnswerBoardProps {
 
 function AnswerBoard({ answers, onRevealAnswer }: AnswerBoardProps) {
   const sortedAnswers = [...answers].sort((a, b) => b.points - a.points);
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      const key = event.key;
+      const numKey = parseInt(key);
+
+      if (!isNaN(numKey) && numKey >= 1 && numKey <= sortedAnswers.length) {
+        const answerIndex = numKey - 1;
+        const answer = sortedAnswers[answerIndex];
+
+        if (answer && !answer.revealed) {
+          onRevealAnswer(answer.id);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [sortedAnswers, onRevealAnswer]);
 
   // Generate light bulbs for each edge
   const generateBulbs = (count: number, offset: number = 0) => {
