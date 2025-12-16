@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Confetti from "react-confetti";
 import { FaceOffResult, Player, Question } from "../types";
 import AnswerBoard from "./AnswerBoard";
 import FaceOff from "./FaceOff";
@@ -7,7 +8,6 @@ import GameHeader from "./GameHeader";
 import "./GamePlay.css";
 import PlayerStatus from "./PlayerStatus";
 import StrikeOverlay from "./StrikeOverlay";
-import Confetti from "react-confetti";
 
 const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
@@ -53,7 +53,9 @@ function GamePlay({
   const [showFaceOff, setShowFaceOff] = useState(true);
   const [roundEnded, setRoundEnded] = useState(false);
   const [showStrikeOverlay, setShowStrikeOverlay] = useState(false);
-  const [strikeType, setStrikeType] = useState<'normal' | 'stealFail'>('normal');
+  const [strikeType, setStrikeType] = useState<"normal" | "stealFail">(
+    "normal"
+  );
   const [showConfetti, setShowConfetti] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(
     questions[0]
@@ -67,10 +69,10 @@ function GamePlay({
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key.toLowerCase() === 'x' && !isReadOnly && !showFaceOff) {
+      if (event.key.toLowerCase() === "x" && !isReadOnly && !showFaceOff) {
         const allRevealed = currentQuestion.answers.every((a) => a.revealed);
         if (!allRevealed && !stealMode && !roundEnded) {
-          setStrikeType('normal');
+          setStrikeType("normal");
           setShowStrikeOverlay(true);
         }
       }
@@ -149,14 +151,14 @@ function GamePlay({
   };
 
   const handleWrongAnswer = () => {
-    setStrikeType('normal');
+    setStrikeType("normal");
     setShowStrikeOverlay(true);
   };
 
   const handleStrikeComplete = () => {
     setShowStrikeOverlay(false);
 
-    if (strikeType === 'stealFail') {
+    if (strikeType === "stealFail") {
       setRoundEnded(true);
     } else {
       const newStrikes = strikes + 1;
@@ -193,7 +195,7 @@ function GamePlay({
   };
 
   const handleStealFail = () => {
-    setStrikeType('stealFail');
+    setStrikeType("stealFail");
     setShowStrikeOverlay(true);
   };
 
@@ -302,7 +304,7 @@ function GamePlay({
       {!isReadOnly && (
         <StrikeOverlay
           show={showStrikeOverlay}
-          strikeCount={strikeType === 'stealFail' ? 1 : strikes + 1}
+          strikeCount={strikeType === "stealFail" ? 1 : strikes + 1}
           onComplete={handleStrikeComplete}
         />
       )}
@@ -312,7 +314,9 @@ function GamePlay({
           width={windowSize.width}
           height={windowSize.height}
           recycle={false}
-          numberOfPieces={500}
+          numberOfPieces={2000}
+          gravity={0.1}
+          initialVelocityY={10}
         />
       )}
     </div>
