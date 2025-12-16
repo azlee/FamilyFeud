@@ -7,6 +7,28 @@ import GameHeader from "./GameHeader";
 import "./GamePlay.css";
 import PlayerStatus from "./PlayerStatus";
 import StrikeOverlay from "./StrikeOverlay";
+import Confetti from "react-confetti";
+
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return windowSize;
+};
 
 interface GamePlayProps {
   players: Player[];
@@ -32,9 +54,12 @@ function GamePlay({
   const [roundEnded, setRoundEnded] = useState(false);
   const [showStrikeOverlay, setShowStrikeOverlay] = useState(false);
   const [strikeType, setStrikeType] = useState<'normal' | 'stealFail'>('normal');
+  const [showConfetti, setShowConfetti] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(
     questions[0]
   );
+
+  const windowSize = useWindowSize();
 
   useEffect(() => {
     setCurrentQuestion(questions[currentRound]);
@@ -54,6 +79,15 @@ function GamePlay({
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentQuestion, stealMode, roundEnded, isReadOnly, showFaceOff]);
+
+  useEffect(() => {
+    if (showConfetti) {
+      const timer = setTimeout(() => {
+        setShowConfetti(false);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showConfetti]);
 
   const currentPlayer = players[currentPlayerIndex];
   const otherPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
@@ -103,6 +137,12 @@ function GamePlay({
     if (!stealMode) {
       setRoundStartPlayerPoints(roundStartPlayerPoints + answer.points);
     }
+
+    // Check if all answers are now revealed and trigger confetti
+    const allRevealed = updatedAnswers.every((a) => a.revealed);
+    if (allRevealed && !stealMode) {
+      setShowConfetti(true);
+    }
   };
 
   const handleWrongAnswer = () => {
@@ -146,6 +186,7 @@ function GamePlay({
     });
     setPlayers(updatedPlayers);
 
+    setShowConfetti(true);
     setRoundEnded(true);
   };
 
@@ -182,6 +223,7 @@ function GamePlay({
       setStealMode(false);
       setShowFaceOff(true);
       setRoundEnded(false);
+      setShowConfetti(false);
     }
   };
 
@@ -260,6 +302,15 @@ function GamePlay({
           show={showStrikeOverlay}
           strikeCount={strikeType === 'stealFail' ? 1 : strikes + 1}
           onComplete={handleStrikeComplete}
+        />
+      )}
+
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
         />
       )}
     </div>
